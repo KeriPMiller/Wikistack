@@ -7,7 +7,7 @@ const path = require('path');
 
 const env = nunjucks.configure('views', {noCache: true}); //where you find the fiews, caching off
 app.set('view engine', 'html');
-app.engine ('html', nunjucks.render);
+app.engine('html', nunjucks.render);
 
 //log information about each incomming request
 app.use(morgan('dev'));
