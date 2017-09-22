@@ -4,6 +4,7 @@ const app = express();
 var bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const path = require('path');
+const models = require('./models');
 
 const env = nunjucks.configure('views', {noCache: true}); //where you find the fiews, caching off
 app.set('view engine', 'html');
@@ -23,7 +24,19 @@ app.get('/', function (req, res)    {
     res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
-//set up server
-var server = app.listen(1337, function ()  {
-    console.log('listening on port 1337');
-});
+// this drops all the tables and recreates them based on our js deffinitions
+//models.db.sync({force: true});
+
+models.db.sync({})
+    .then(function ()   {
+        app.listen(1337, function ()  {
+            console.log('listening on port 1337');
+        });
+    })
+    .catch(console.error);
+
+
+// //set up server
+// var server = app.listen(1337, function ()  {
+//     console.log('listening on port 1337');
+// });
