@@ -25,21 +25,34 @@ app.get('/', function (req, res)    {
 })
 
 // // this drops all the tables and recreates them based on our js deffinitions
+models.db.sync({force: true})
+.then(function () {
+    // make sure to replace the name below with your express app
+    app.listen(3000, function () {
+        console.log('Server is listening on port 3000!');
+    });
+})
+.catch(console.error);
+
 // models.db.sync({force: true});
 
-models.User.sync({})
-    .then(function ()  {
-        return models.Page.sync({})
-    })
-    .then(function ()   {
-        app.listen(1337, function ()  {
-            console.log('listening on port 1337');
-        });
-    })
-    .catch(console.error);
+
 
 
 // //set up server
 // var server = app.listen(1337, function ()  {
 //     console.log('listening on port 1337');
 // });
+
+
+//syncing database tables individually
+// models.User.sync({})
+//     .then(function ()  {
+//         return models.Page.sync({})
+//     })
+//     .then(function ()   {
+//         app.listen(1337, function ()  {
+//             console.log('listening on port 1337');
+//         });
+//     })
+//     .catch(console.error);
