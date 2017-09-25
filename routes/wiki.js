@@ -4,44 +4,43 @@ const models = require('../models');
 const Page = models.Page;
 
     router.get('/', function (req, res, next)  {
-        res.redirect('/');
-        // res.send('got to GET /wiki/');
-        // console.log(Page.findAll()
-        //             .then(res => res.data)
-        //             .then(info => console.log(info))
-        //         );
-        // // res.send(Page.findAll());
+       res.redirect('/');
     });
     router.post('/', function (req, res, next)    {
-            res.json(req.body);
+            // res.json(req.body);
             var page = Page.build({
                 title: req.body.title,
                 content: req.body.content,
-                //urlTitle: getURL(req.body.title)
-            });
-            page.save();
+            })
+            return page.save()
+            .then(inst => {
+                var url = inst.getDataValue('urlTitle');
+                res.redirect(url);
+                // res.redirect(inst.route); //routevirtal FTW
+            })
+            .catch(next);
+            
     });
-//render looks into the views folder of the file name specified
+    //render looks into the views folder of the file name specified
     router.get('/add', function (req, res, next) {
         res.render('addpage');
         // res.send("got to Get /wiki/add");
 
     });
-
-// function getURL (title)  {
-//     if(title)   {
-//     var spc = new RegExp(/\s/,'g');
-//     var newT = title.replace(spc, '_');
-//     return newT;
-    
-//     }
-//     else {
-//     // Generates random 5 letter string
-//     return Math.random().toString(36).substring(2, 7);
-//   }
-// }
-
-
-
+    router.get('/:urlTitle', function (req, res, next) {
+        Page.findOne({
+            where: {
+                urlTitle: req.params.urlTitle}
+        })
+        .then(function (foundPage) {
+            //res.json(foundPage);
+            console.log(foundPage);
+            res.render('wikipage', {
+                content: foundPage.getDataValue('content'),
+                title: foundPage.getDataValue('title')
+            });
+        })
+        .catch(next);
+    });
 
 module.exports = router;
