@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const path = require('path');
 const models = require('./models');
+const routes = require('./routes');
 
 const env = nunjucks.configure('views', {noCache: true}); //where you find the fiews, caching off
 app.set('view engine', 'html');
@@ -16,16 +17,17 @@ app.use(morgan('dev'));
 //Body parsing middleware
 app.use(bodyParser.urlencoded({extended: true})); //for html form submits
 app.use(bodyParser.json()); //would be for ajax request
+app.use('/', routes);
 
 //serves up static files from public folder
 app.use(express.static('public'));
 
 app.get('/', function (req, res)    {
     res.sendFile(path.join(__dirname, 'views/index.html'));
-})
+});
 
 // // this drops all the tables and recreates them based on our js deffinitions
-models.db.sync({force: true})
+models.db.sync()
 .then(function () {
     // make sure to replace the name below with your express app
     app.listen(3000, function () {
@@ -34,11 +36,10 @@ models.db.sync({force: true})
 })
 .catch(console.error);
 
+
+
+
 // models.db.sync({force: true});
-
-
-
-
 // //set up server
 // var server = app.listen(1337, function ()  {
 //     console.log('listening on port 1337');
