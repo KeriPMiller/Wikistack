@@ -13,8 +13,13 @@ const Page = models.Page;
         // // res.send(Page.findAll());
     });
     router.post('/', function (req, res, next)    {
-        res.send("got to Post /wiki/");
-    
+            res.json(req.body);
+            var page = Page.build({
+                title: req.body.title,
+                content: req.body.content,
+                //urlTitle: getURL(req.body.title)
+            });
+            page.save();
     });
 //render looks into the views folder of the file name specified
     router.get('/add', function (req, res, next) {
@@ -22,5 +27,21 @@ const Page = models.Page;
         // res.send("got to Get /wiki/add");
 
     });
+
+// function getURL (title)  {
+//     if(title)   {
+//     var spc = new RegExp(/\s/,'g');
+//     var newT = title.replace(spc, '_');
+//     return newT;
+    
+//     }
+//     else {
+//     // Generates random 5 letter string
+//     return Math.random().toString(36).substring(2, 7);
+//   }
+// }
+
+
+
 
 module.exports = router;
