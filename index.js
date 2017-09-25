@@ -24,10 +24,13 @@ app.get('/', function (req, res)    {
     res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
-// this drops all the tables and recreates them based on our js deffinitions
-//models.db.sync({force: true});
+// // this drops all the tables and recreates them based on our js deffinitions
+// models.db.sync({force: true});
 
-models.db.sync({})
+models.User.sync({})
+    .then(function ()  {
+        return models.Page.sync({})
+    })
     .then(function ()   {
         app.listen(1337, function ()  {
             console.log('listening on port 1337');
